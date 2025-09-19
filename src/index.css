@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+body{
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  padding: 20px 50px ;
+}
+ 
+
+::-webkit-scrollbar {
+  display: none; /* removes scrollbar in WebKit browsers */
+}
