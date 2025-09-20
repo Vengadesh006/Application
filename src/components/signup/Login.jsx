@@ -1,7 +1,9 @@
 import React from 'react'
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa6";
-
+import { CiMail } from "react-icons/ci";
+import { CiLock } from "react-icons/ci";
+import { FaRegEyeSlash } from "react-icons/fa";
 
 export const Login = () => {
   return (
@@ -24,11 +26,27 @@ export const Login = () => {
                     </div>
                 </div>
 
-                <p> continue with with email </p>
+                <p className='text-center my-5 text-gray-400' > continue with with email </p>
 
-                <div className="">
-                    <input type="text" />
-                    <input type="password" />
+                <div className="flex flex-col gap-4">
+                    <div className="flex items-center px-2 border">
+                        <span className='text-2xl mx-2' > <CiMail /> </span>
+                        <input type="text" 
+                        className='w-full border outline-none py-2 '
+                        placeholder='Email'
+                    />
+                    </div>
+                    <div className="flex items-center border">
+                        <span className='text-2xl mx-2' > <CiLock /> </span>
+                         <input type="password" 
+                        className='w-full border border-gray-300 outline-none py-2 '
+                        placeholder='Password'
+                    />
+                    <span> <FaRegEyeSlash /> </span>
+
+                    </div>
+                    
+                    
                     <div className="">
                         <div className=""> 
                             <input type="checkbox" /> <span> Remember me </span>
