@@ -12,7 +12,7 @@ export const Message = () => {
 
     return (
         <div>
-            <div className="flex flex-col gap-2 mt-4 w-full bg-transparent h-[735px] max-h-full  bg-red-200 overflow-y-auto">
+            <div className="flex flex-col gap-2 mt-4 w-full bg-transparent h-[735px] max-h-full bg-red-200 overflow-y-auto">
                 <div className="flex justify-start mb-2">
                     <div className="flex items-end">
                         <img src={user1} className="w-15 h-14 rounded-xl object-cover" alt="user" />

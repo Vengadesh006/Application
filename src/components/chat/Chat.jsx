@@ -43,7 +43,7 @@ export const Chat = ({isOpen, setIsOpen}) => {
   return (
     <div className="w-full h-full flex shadow-xl bg-white rounded-4xl relative overflow-hidden">
       {/* Sidebar (Users) */}
-      <div className="flex flex-col w-full md:w-2/6 bg-transparent py-4 ">
+      <div className="flex flex-col w-full lg:w-2/6 ms:1/2 bg-transparent py-4 ">
         <div className="flex justify-between overflow-hidden bg-transparent rounded-md">
           <div className="flex flex-1 items-center gap-2 ml-5 py-1 mr-4 px-2 bg-[#dbdcfe] rounded-xl">
             <div className="text-2xl">
@@ -88,13 +88,13 @@ export const Chat = ({isOpen, setIsOpen}) => {
         {/* Header */}
         <div className="flex justify-between items-center rounded-sm">
           <div>
-            <h1 className="text-[28px] font-medium">Design Chat</h1>
+            <h1 className="text-[28px] font-[600]">Design Chat</h1>
             <p className="text-gray-500 text-lg">23 members, 10 online</p>
           </div>
           <div className="flex items-center gap-4 cursor-pointer ">
-            <CiSearch className="text-[35px] text-gray-400 " />
-            <HiOutlinePhone className="text-[29px] text-gray-400" />
-            <HiOutlineDotsVertical className="text-2xl text-gray-400" />
+            <CiSearch className="text-[27px] text-gray-400 " />
+            <HiOutlinePhone className="text-[25px] text-gray-400" />
+            <HiOutlineDotsVertical className="text-[20px] text-gray-400" />
           </div>
         </div>
 

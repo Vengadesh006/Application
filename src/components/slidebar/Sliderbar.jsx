@@ -15,6 +15,8 @@ import { MdOutlineKeyboardVoice } from "react-icons/md";
 import { GrGallery } from "react-icons/gr";
 import room1 from "../../assets/room1.jpg"
 import room2 from "../../assets/room2.jpg"
+import { FiImage, FiFileText, FiMusic, FiLink, FiMic } from "react-icons/fi";
+
 
 export const Sliderbar = () => {
     const user = [
@@ -23,38 +25,33 @@ export const Sliderbar = () => {
     { name: "Jasmin Lowery", Img: img3 },
     { name: "Jasmin Lowery", Img: img3 },
     { name: "Jasmin Lowery", Img: img3 },
-    
-   
-   
+    { name: "Jasmin Lowery", Img: img3 },
+    { name: "Jasmin Lowery", Img: img3 },
   ]
 
   const group = [
     { icon: <FiVideo />, name: "13 Videos" },
-    { icon: <CiFileOn />, name: "378 Files" },
-    { icon: <MdOutlineAudiotrack />, name: "10 Audios files " },
-    { icon: <IoLink />, name: "25 shared links" },
-    { icon: <MdOutlineKeyboardVoice />, name: "2589 Voice message" }
+    { icon: <FiFileText />, name: "378 Files" },
+    { icon: <FiMusic />, name: "10 Audios files " },
+    { icon: <FiLink />, name: "25 shared links" },
+    { icon: <FiMic />, name: "2589 Voice message" }
   ]
-
-
-
-
 
 
   return (
    <div className="h-full w-full flex  flex-col gap-2 bg-transpraent">
       {/* Shared Files Section */}
-      <div className=" bg-white h-1/2 rounded-3xl py-4 px-5 overflow-hidden max-w-xs ">
+      <div className=" bg-white h-[520px] rounded-3xl py-4 px-5 overflow-hidden max-w-xs ">
         <div className="flex justify-between items-center">
-          <h1 className="text-[18px] font-semibold"> Group Info </h1>
+          <h1 className="text-[19px] font-medium"> Group Info </h1>
          
           <button className=" hover:text-red-500 ">
             <IoMdClose />
           </button>
         </div>
-         <h1 className="my-2">Files</h1>
+         <h1 className="my-4 font-semibold">Files</h1>
          
-          <div className="flex items-center justify-between group cursor-pointer hover:bg-gray-100 rounded-lg px-2 py-1">
+          <div className="flex items-center justify-between group cursor-pointer hover:bg-gray-100 rounded-lg px-1 py-1">
               <div className="flex items-cente gap-3">
                 <span className="text-[20px] text-[#0e0e0e] "> <GrGallery /> </span>
                 <span className="text-sm font-medium"> 265 Photo </span>
@@ -67,9 +64,9 @@ export const Sliderbar = () => {
                 <img src={room2} className='w-36 h-27 object-cover rounded-2xl ' alt="" />
               </div>
 
-        <ul className="space-y-3">
+        <ul className="space-y-5">
           {group.map((item, i) => (
-            <li key={i} className="flex items-center justify-between group cursor-pointer mb-3 hover:bg-gray-100 rounded-lg px-2 py-1">
+            <li key={i} className="flex items-center justify-between group cursor-pointer hover:bg-gray-100 rounded-lg px-1 py-1">
               <div className="flex gap-2 items-center">
                 <span className="text-[22px] text-[#0e0e0e]  ">{item.icon}</span>
                 <span className="text-sm font-medium">{item.name}</span>
@@ -77,18 +74,20 @@ export const Sliderbar = () => {
               <IoIosArrowDown className="text-[#0e0e0e] " />
             </li>
           ))}
+          
         </ul>
+        
       </div>
 
       {/* Members Section */}
-      <div className="flex-1 h-[360px] overflow-y-scroll py-5 px-5 max-w-sm rounded-4xl bg-[#dbdcfe] ">
+      <div className="flex-1 h-[360px] px-5 py-3 max-w-sm rounded-4xl bg-[#dbdcfe] ">
         <div className="flex  justify-between mb-3 items-center">
           <h1 className="text-sm font-bold">23 Members</h1>
           <button className="text-gray-500  ">
             <IoMdClose />
           </button>
         </div>
-        <ul className="flex flex-col gap-4 mb-4">
+        <ul className="flex flex-col max-h-full  h-[393px]  gap-4  overflow-y-scroll">
           {user.map((item, i) => (
             <li key={i} className="flex items-center gap-3 rounded-lg hover:bg-gray-100 cursor-pointer">
               <img
