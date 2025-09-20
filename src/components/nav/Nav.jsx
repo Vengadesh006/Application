@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { MdOutlineLogout, MdOutlineFileUpload, MdOutlineKeyboardVoice } from "react-icons/md";
 import { IoMdChatboxes, IoMdSearch, IoMdClose } from "react-icons/io";
 import { FaFolder, FaFolderOpen } from "react-icons/fa";
@@ -8,8 +8,12 @@ import { HiPhone, HiOutlineDotsVertical } from "react-icons/hi";
 import { LiaTelegramPlane } from "react-icons/lia";
 import { GrGallery } from "react-icons/gr";
 import logo from "../../assets/new.png"
+import { MdLogin } from "react-icons/md";
 
 export const Nav = ({ isOpen, setChat}) => {
+
+  const [user, setUser] = useState(true)
+
   return (
     <div
       className={`fixed top-0 left-0 h-full w-24 text-[#8a8788] z-30 
@@ -29,7 +33,7 @@ export const Nav = ({ isOpen, setChat}) => {
 
       {/* Menu */}
       <ul className="flex flex-col gap-3 overflow-y-scroll">
-        <li className=" flex flex-col items-center justify-center cursor-pointer hover:text-[#f1f1f1]  relative hover:bg-[#464646]  transite-300 hover:rounded-lg size-20"
+        <li className=" flex flex-col items-center gap-1 justify-center cursor-pointer hover:text-[#f1f1f1]  relative hover:bg-[#464646]  transite-300 hover:rounded-lg size-20"
         onClick={() => setChat(true)}
         >
           <IoMdChatboxes className="text-[28px]" />
@@ -49,19 +53,19 @@ export const Nav = ({ isOpen, setChat}) => {
         </li>
         <li 
          onClick={() =>  setChat(false)}
-        className="flex flex-col items-center justify-center cursor-pointer  hover:text-[#f1f1f1] hover:bg-[#464646] hover:rounded-lg size-20">
+        className="flex flex-col items-center gap-1 justify-center cursor-pointer  hover:text-[#f1f1f1] hover:bg-[#464646] hover:rounded-lg size-20">
           <FaFolderOpen className="text-[23px]" />
           <p className="text-xs mt-1">Friends</p>
         </li>
         <li 
         onClick={() =>  setChat(false)}
-        className="flex flex-col items-center  justify-center cursor-pointer  hover:text-[#f1f1f1] hover:bg-[#464646] hover:rounded-lg size-20">
+        className="flex flex-col items-center gap-1  justify-center cursor-pointer  hover:text-[#f1f1f1] hover:bg-[#464646] hover:rounded-lg size-20">
           <FaFolderOpen className="text-[23px]" />
           <p className="text-xs mt-1">News</p>
         </li>
         <li 
         onClick={() =>  setChat(false)}
-        className="flex flex-col items-center  justify-center cursor-pointer  hover:text-[#f1f1f1] hover:bg-[#464646] hover:rounded-lg size-20">
+        className="flex flex-col items-center gap-1  justify-center cursor-pointer  hover:text-[#f1f1f1] hover:bg-[#464646] hover:rounded-lg size-20">
           <FaFolderOpen className="text-[23px]" />
           <p className="text-xs mt-1">Archive</p>
         </li>
@@ -70,22 +74,22 @@ export const Nav = ({ isOpen, setChat}) => {
         </li>
         <li
         onClick={() =>  setChat(false)}
-        className="flex flex-col items-center  justify-center cursor-pointer  hover:text-[#f1f1f1] hover:bg-[#464646] hover:rounded-lg size-20">
+        className="flex flex-col items-center gap-1  justify-center cursor-pointer  hover:text-[#f1f1f1] hover:bg-[#464646] hover:rounded-lg size-20">
           <IoPersonCircleOutline className="text-[23px]" />
           <p className="text-xs mt-1">Profile</p>
         </li>
         <li 
         onClick={() =>  setChat(false)}
-        className="flex flex-col items-center  justify-center cursor-pointer  hover:text-[#f1f1f1] hover:bg-[#464646] hover:rounded-lg size-20">
+        className="flex flex-col items-center  gap-1 justify-center cursor-pointer  hover:text-[#f1f1f1] hover:bg-[#464646] hover:rounded-lg size-20">
           <RiEditBoxLine className="text-[23px]" />
           <p className="text-xs mt-1">Edit</p>
         </li>
       </ul>
 
       {/* Logout */}
-      <div className="flex flex-col items-center cursor-pointer">
-        <MdOutlineLogout className="text-[23px]" />
-        <p className="text-xs ">Logout</p>
+      <div className="flex flex-col gap-1 items-center cursor-pointer" onClick={() => setUser(!user)} >
+       {user ? <MdOutlineLogout className="text-[23px]" /> : <MdLogin  className="text-[23px]" /> } 
+        <p className="text-xs tracking-wide"> {user ? "Logout" : "LogIn"} </p>
       </div>
     </div>
   )

@@ -2,10 +2,14 @@ import React, { useState } from 'react'
 import { Nav } from '../nav/Nav'
 import { Sliderbar } from '../slidebar/Sliderbar'
 import { Chat } from '../chat/chat'
+import {auth} from "../config/Firebase"
 
 export const Home = () => {
     const [isOpen, setIsOpen] = useState(false)
+    
     const [chat, setChat] = useState(true)
+
+
     return (
         <div className="flex items-center justify-center min-h-screen">
             <div
