@@ -9,10 +9,12 @@ import { LiaTelegramPlane } from "react-icons/lia";
 import { GrGallery } from "react-icons/gr";
 import logo from "../../assets/new.png"
 import { MdLogin } from "react-icons/md";
+import { Profile } from '../profile/Profile';
+import {Home} from "../home/Home"
 
-export const Nav = ({ isOpen, setChat}) => {
+export const Nav = ({ isOpen, setChat, setPage}) => {
 
-  const [user, setUser] = useState(true)
+  const [user, setUser] = useState(false)
 
   return (
     <div
@@ -34,7 +36,7 @@ export const Nav = ({ isOpen, setChat}) => {
       {/* Menu */}
       <ul className="flex flex-col gap-3 overflow-y-scroll">
         <li className=" flex flex-col items-center gap-1 justify-center cursor-pointer hover:text-[#f1f1f1]  relative hover:bg-[#464646]  transite-300 hover:rounded-lg size-20"
-        onClick={() => setChat(true)}
+        onClick={() => setPage("home")}
         >
           <IoMdChatboxes className="text-[28px]" />
           <span className="absolute top-2 right-4 size-6 flex items-center justify-center text-xs bg-orange-500 text-[#8a8788] text-white rounded-full">
@@ -73,7 +75,7 @@ export const Nav = ({ isOpen, setChat}) => {
           <div className="w-8 border-t border-gray-500 my-4"></div>
         </li>
         <li
-        onClick={() =>  setChat(false)}
+        onClick={()=> setPage("profile") }
         className="flex flex-col items-center gap-1  justify-center cursor-pointer  hover:text-[#f1f1f1] hover:bg-[#464646] hover:rounded-lg size-20">
           <IoPersonCircleOutline className="text-[23px]" />
           <p className="text-xs mt-1">Profile</p>

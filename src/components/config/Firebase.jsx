@@ -1,25 +1,20 @@
 import { initializeApp } from "firebase/app";
-import {createUserWithEmailAndPassword, getAuth} from "firebase/auth"
-import {doc} from "firebase/firestore"
+import { getAnalytics } from "firebase/analytics";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCU0ls6zxbvglhyWxwnrItkU7-rbzfCDdk",
-  authDomain: "product-e52a2.firebaseapp.com",
-  projectId: "product-e52a2",
-  storageBucket: "product-e52a2.firebasestorage.app",
-  messagingSenderId: "1014443295218",
-  appId: "1:1014443295218:web:0b0209aa50ebdb567f2b6b",
-  measurementId: "G-1JTFX8XPHZ"
+  apiKey: "AIzaSyAf236I9DhPUlvdXgnDSp95kUC8si4b6Z0",
+  authDomain: "chat-13065.firebaseapp.com",
+  projectId: "chat-13065",
+  storageBucket: "chat-13065.firebasestorage.app",
+  messagingSenderId: "721170188540",
+  appId: "1:721170188540:web:b205c913f0e7be98d1ef79",
+  measurementId: "G-XBTPR06614"
 };
 
-// Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app)
 
+export const googleProvide = new GoogleAuthProvider()

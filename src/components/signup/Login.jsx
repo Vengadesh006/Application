@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa6";
 import { CiMail } from "react-icons/ci";
@@ -7,6 +7,11 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { IoPersonOutline } from "react-icons/io5";
 import { TbPhone } from "react-icons/tb"
+import { onAuthStateChanged, signInWithPopup } from 'firebase/auth';
+import { auth, googleProvide } from "../config/Firebase"
+import { signupFetch } from '../redux/slice/SliceData/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginFetch } from '../redux/slice/SliceData/verifyUserSlice';
 
 export const Login = () => {
 
@@ -25,15 +30,11 @@ export const Login = () => {
     const [phone, setPhone] = useState('')
 
     const [error, setError] = useState({})
-
-    console.log(error);
-
-
+    
+    const dispatch = useDispatch()
+ 
     const validateForm = (e) => {
         const err = {}
-
-        console.log("check : ", !sign);
-
 
         if (sign) {
 
@@ -60,30 +61,74 @@ export const Login = () => {
             }
 
         }
-
-
         setError(err)
-
         return err
 
     }
 
 
-    const handleLoginSubmitInputs = (e) => {
+    const handleLoginSubmitInputs = async (e) => {
+
         e.preventDefault()
 
-        const errorCheck = validateForm()
+        const errorCheck = await validateForm()
 
-        console.log("count : ", Object.values(errorCheck).length);
+        if (Object.values(errorCheck).length !== 0) return
 
+        if (sign) {
+            const payload = {
+                "username": username,
+                "password": password,
+                "email": email,
+                "phone": phone
+            }
+            console.log(payload);
 
-        if (Object.values(errorCheck).length === 0) {
-            console.log(error);
-
+            dispatch(signupFetch(payload))
 
         }
+        else {
+            const payload = {
+                email : email, 
+                password : password
+            }
+           const storage = await dispatch(loginFetch(payload))
+
+          localStorage.setItem("token", storage?.payload?.token)
+           
+ 
+        }
+
 
     }
+
+    const GoogleSignIn = async (e) => {
+        try {
+            const result = await signInWithPopup(auth, googleProvide)
+
+            const user = result.user
+
+            const payload = {
+                "username": user?.displayName,
+                "email": user?.email,
+                "avatar": user?.photoURL,
+                "phone": user?.phoneNumber,
+                "types": "Google",
+                "password": ""
+            }
+
+            dispatch(signupFetch(payload))
+
+
+        } catch (err) {
+            console.log(err);
+
+        }
+    }
+
+
+
+
     return (
         <div className='flex items-center justify-center min-h-screen bg-[#eeeffa]' >
             <form action="" onSubmit={handleLoginSubmitInputs} className='w-full max-w-sm lg:max-w-lg bg-white p-5 shadow-sm rounded-xl' >
@@ -95,8 +140,8 @@ export const Login = () => {
                 </div>
                 {/* google sign */}
 
-                <div className="flex items-center justify-evenly gap-4 my-5">
-                    <div className="flex items-center justify-center py-3 flex-1 gap- rounded-md shadow-sm">
+                <div className="flex items-center justify-evenly gap-4 my-5" onClick={GoogleSignIn} >
+                    <div className="flex items-center justify-center py-3 flex-1 gap-2 rounded-md shadow-sm">
                         <span> <FcGoogle /> </span>
                         <span className='text-sm font-semibold' > Google </span>
                     </div>
@@ -131,7 +176,7 @@ export const Login = () => {
 
 
                     {/* Email */}
-                      <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1">
                         <div className="flex items-center px-2 border border-gray-200 ">
                             <span className='text-2xl mx-2 text-gray-400' > <CiMail /> </span>
                             <input type="text"

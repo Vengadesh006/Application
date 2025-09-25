@@ -20,12 +20,14 @@ import { CiSearch } from "react-icons/ci";
 import { HiOutlinePhone } from "react-icons/hi2";
 import { HiDotsVertical } from "react-icons/hi";
 import { Message } from "./Message";
+import { useSelector } from "react-redux";
 
 
 
 
 
 export const Chat = ({isOpen, setIsOpen}) => {
+
   const [user, setUser] = useState([
     { username: "Deve", chat: "Hi there, how can I assist you?", img: user1 },
     { username: "Alex", chat: "Let’s work on the new UI today!", img: user2 },
@@ -88,7 +90,7 @@ export const Chat = ({isOpen, setIsOpen}) => {
         {/* Header */}
         <div className="flex justify-between items-center rounded-sm">
           <div>
-            <h1 className="text-[28px] font-[600]">Design Chat</h1>
+            <h1 className="text-[28px] font-[600]">Design Chat  </h1>
             <p className="text-gray-500 text-lg">23 members, 10 online</p>
           </div>
           <div className="flex items-center gap-4 cursor-pointer ">
