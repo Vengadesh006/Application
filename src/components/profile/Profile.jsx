@@ -1,37 +1,36 @@
 import React, { useEffect, useState } from 'react'
 import { MdOutlinePhotoCamera } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserFetch } from '../redux/slice/SliceData/getUser';
+import { userFetchToken } from '../redux/slice/SliceData/userToken';
+import { userGetId } from '../redux/slice/SliceData/userGetId';
 import { UpdateProfile } from './UpdateProfile';
-import { updateUser } from '../redux/slice/SliceData/updateUser';
+
 
 export const Profile = () => {
 
-  const { profile, loading, errors } = useSelector(state => state.getUser)
-
-  console.log(profile);
-
-
-  const token = localStorage.getItem('token')
+  const [modal, setModal] = useState(false)
 
   const dispatch = useDispatch()
 
-  const id = profile?.id || null
-
-
-  useEffect(() => {
-    dispatch(getUserFetch(token))
-  }, [dispatch, token])
+  const token = localStorage.getItem('token')
 
   useEffect(() => {
+    const res = dispatch(userFetchToken(token))
+  },[token])
 
-    console.log("token 2 : ", token);
+  const { userToken } = useSelector(state => state.userTokenStore)
 
-    dispatch(updateUser({ id, token }))
+  const id = userToken?.id
 
-  }, [])
+  useEffect(() => {
 
-  const [modal, setModal] = useState(false)
+    if(id){
+      const res = dispatch(userGetId({id, token} ))
+    }
+  }, [id, token])
+
+  const {userId, loading } = useSelector(state => state.userGetStore)
+
 
   return (
     <div className='w-full h-full flex shadow-xl rounded-4xl relative overflow-hidden px-12 bg-white'>
@@ -39,7 +38,7 @@ export const Profile = () => {
         {/* Profile Image */}
         <div className="relative w-48 h-48 rounded-full overflow-hidden">
           <img
-            src={`http://localhost:3000/upload/${profile?.avatar}`}
+            src={`http://localhost:3000/upload/${userId?.avatar  || null }`}
             className="w-full h-full object-cover"
             alt="profile"
           />
@@ -57,7 +56,7 @@ export const Profile = () => {
           <div>
             <label className='block my-2'>Username</label>
             <p className='w-full border border-gray-300 py-3 px-2 rounded-lg'>
-              {profile?.user || ""}
+              {userId?.username || ""}
             </p>
           </div>
 
@@ -65,13 +64,13 @@ export const Profile = () => {
             <div className="w-1/2">
               <label className='block my-2'>First name</label>
               <p className='w-full border border-gray-300 py-3 px-2 rounded-lg'>
-                {profile?.firstName || ""}
+                {userId?.firstName || ""}
               </p>
             </div>
             <div className="w-1/2">
               <label className='block my-2'>Last name</label>
               <p className='w-full border border-gray-300 py-3 px-2 rounded-lg'>
-                {profile?.lastName || ""}
+                {userId?.lastName || ""}
               </p>
             </div>
           </div>
@@ -83,7 +82,7 @@ export const Profile = () => {
               <div className="flex gap-2">
                 <p className='w-1/3 border border-gray-300 py-3 px-2 rounded-lg'>+91</p>
                 <p className='w-full border border-gray-300 py-3 px-2 rounded-lg'>
-                  {profile?.phone}
+                  {userId?.phone   || null}
                 </p>
               </div>
             </div>
@@ -98,7 +97,7 @@ export const Profile = () => {
           <div>
             <label className='block my-2'>Email</label>
             <p className='w-full border border-gray-300 py-3 px-2 rounded-lg'>
-              {profile?.email}
+              {userId?.email   || null}
             </p>
           </div>
 
@@ -135,7 +134,7 @@ export const Profile = () => {
 
             {/* Body */}
             <div className="mt-4">
-              <UpdateProfile />
+                <UpdateProfile />
             </div>
           </div>
         </div>

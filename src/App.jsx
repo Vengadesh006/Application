@@ -14,8 +14,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/profile' element={<Modal />} />
-          <Route path='/login' element={<Login />} />
+          {/* <Route path='/profile' element={<UpdateProfile />} /> */}
+          {/* <Route path='/login' element={<Login />} /> */}
         </Routes>
       </BrowserRouter>
     </>

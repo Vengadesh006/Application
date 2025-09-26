@@ -7,9 +7,9 @@ export const signupFetch = createAsyncThunk(
     try {
       const res = await API.post("/auth/signup", info);  
       console.log(res.data);
-      return res?.data;  
+      return res?.data?.message;  
     } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
+      return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );

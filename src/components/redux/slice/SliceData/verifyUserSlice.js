@@ -8,10 +8,15 @@ export const loginFetch = createAsyncThunk(
            
             const response = await API.post('/auth/login', info)
 
+            console.log(response?.data?.message);
+            
+
             return response?.data
 
         } catch (err) {
-            rejectWithValue(err.response?.data?.message || err.message)
+            console.log(err?.response?.data?.message);
+            
+           return rejectWithValue(err?.response?.data?.message)
         }
 
     }

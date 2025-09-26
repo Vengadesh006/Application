@@ -12,6 +12,7 @@ import { auth, googleProvide } from "../config/Firebase"
 import { signupFetch } from '../redux/slice/SliceData/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginFetch } from '../redux/slice/SliceData/verifyUserSlice';
+import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
 
@@ -30,9 +31,11 @@ export const Login = () => {
     const [phone, setPhone] = useState('')
 
     const [error, setError] = useState({})
-    
+
     const dispatch = useDispatch()
- 
+
+    const navigate = useNavigate()
+
     const validateForm = (e) => {
         const err = {}
 
@@ -77,26 +80,43 @@ export const Login = () => {
 
         if (sign) {
             const payload = {
-                "username": username,
-                "password": password,
-                "email": email,
-                "phone": phone
-            }
-            console.log(payload);
+                username,
+                password,
+                email,
+                phone,
+            };
 
-            dispatch(signupFetch(payload))
+            try {
+                const res = await dispatch(signupFetch(payload)).unwrap(); 
+                console.log("Signup success:", res);
+
+                setUsername("");
+                setPassword("");
+                setEmail("");
+                setPhone("");
+            } catch (err) {
+                console.error("Signup failed:", err);
+            }
 
         }
         else {
             const payload = {
-                email : email, 
-                password : password
+                email: email,
+                password: password
             }
-           const storage = await dispatch(loginFetch(payload))
+            try {
+                const storage = await dispatch(loginFetch(payload)).unwrap();
 
-          localStorage.setItem("token", storage?.payload?.token)
-           
- 
+                localStorage.setItem("token", storage?.token);
+               
+                setEmail("")
+                setPassword("")
+                navigate("/");
+
+            } catch (err) {
+                console.error("Login failed:", err);
+            }
+
         }
 
 
@@ -125,8 +145,6 @@ export const Login = () => {
 
         }
     }
-
-
 
 
     return (

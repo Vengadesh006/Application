@@ -11,10 +11,17 @@ import logo from "../../assets/new.png"
 import { MdLogin } from "react-icons/md";
 import { Profile } from '../profile/Profile';
 import {Home} from "../home/Home"
+import { useSelector } from 'react-redux';
 
 export const Nav = ({ isOpen, setChat, setPage}) => {
+  
+  const logout = () => {
+    console.log("remove");
+    localStorage.removeItem('token')
+  }
+  const {userToken} = useSelector(state => state.userTokenStore)
 
-  const [user, setUser] = useState(false)
+  const user = !!userToken
 
   return (
     <div
@@ -89,7 +96,7 @@ export const Nav = ({ isOpen, setChat, setPage}) => {
       </ul>
 
       {/* Logout */}
-      <div className="flex flex-col gap-1 items-center cursor-pointer" onClick={() => setUser(!user)} >
+      <div className="flex flex-col gap-1 items-center cursor-pointer" onClick={logout} >
        {user ? <MdOutlineLogout className="text-[23px]" /> : <MdLogin  className="text-[23px]" /> } 
         <p className="text-xs tracking-wide"> {user ? "Logout" : "LogIn"} </p>
       </div>

@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { patchUser } from '../redux/slice/SliceData/patchSclice';
+import { updateUserId } from '../redux/slice/SliceData/updateUser';
 
 export const UpdateProfile = () => {
-  const dispatch = useDispatch(); // 
 
-  const { userUpdate, loading, errors, token } = useSelector(state => state.updateUser);
+  const { userId, loading } = useSelector(state => state.userGetStore )
 
- 
+  const id = userId?.id
+  
+  const token = localStorage.getItem('token')
+
+  const dispatch = useDispatch()
+
   const [serverData, setServerData] = useState({
     username: "",
     password: "",
@@ -19,18 +23,18 @@ export const UpdateProfile = () => {
   });
 
   useEffect(() => {
-    if (userUpdate) {
+    if (userId) {
       setServerData({
-        username: userUpdate.username || "",
-        password: userUpdate?.password,
-        email: userUpdate.email || "",
-        phone: userUpdate.phone || "",
+        username: userId.username || "",
+        password: userId?.password,
+        email: userId.email || "",
+        phone: userId.phone || "",
         avatar: null,
-        firstName: userUpdate.firstName || "",
-        lastName: userUpdate.lastName || ""
+        firstName: userId.firstName || "",
+        lastName: userId.lastName || ""
       });
     }
-  }, [userUpdate]);
+  }, [userId]);
 
   const onChangeEvent = (e) => {
     const { name, value, files } = e.target;
@@ -42,21 +46,33 @@ export const UpdateProfile = () => {
   }
 
   const handlerServe = (e) => {
+    
     e.preventDefault();
 
-    // Use FormData if sending avatar
     const formData = new FormData();
-    for (const key in serverData) {
-      if (serverData[key] !== null) {
-        formData.append(key, serverData[key]);
-      }
+
+    formData.append('username', serverData?.username)
+
+    formData.append('password', serverData?.password)
+
+    formData.append('email', serverData?.email)
+
+    formData.append('firstName', serverData?.firstName)
+
+    formData.append("lastName", serverData?.lastName)
+
+    if(serverData?.avatar && serverData?.avatar !== null && serverData?.avatar !== "" ){
+      formData.append("avatar", serverData?.avatar)
     }
 
-    dispatch(patchUser({ id: userUpdate?.id, token, info : formData }));
+     const res = dispatch(updateUserId({id, formData, token }))
+
+     console.log(res);
+     
+    
   }
 
-  console.log(serverData);
-  
+ 
 
   return (
     <div className="w-full p-4">
@@ -147,7 +163,7 @@ export const UpdateProfile = () => {
         </div>
 
         <button className="w-full py-3 bg-indigo-300 rounded-xl">
-          Save Change
+          {loading ? "loading" : "update data"}
         </button>
       </form>
     </div>
