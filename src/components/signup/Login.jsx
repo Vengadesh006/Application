@@ -123,10 +123,18 @@ export const Login = () => {
     }
 
     const GoogleSignIn = async (e) => {
+
+        console.log("Google Account . ")
+
         try {
             const result = await signInWithPopup(auth, googleProvide)
 
-            const user = result.user
+            const user = result?.user
+
+            const g_id = await user?.getIdToken()
+
+            console.log("token : ", g_id);
+            
 
             const payload = {
                 "username": user?.displayName,
@@ -137,12 +145,16 @@ export const Login = () => {
                 "password": ""
             }
 
-            dispatch(signupFetch(payload))
+            console.log(payload)
+            
+            
+            const res = await dispatch(signupFetch(payload)).unwrap() 
+
+            console.log(res)
 
 
         } catch (err) {
             console.log(err);
-
         }
     }
 

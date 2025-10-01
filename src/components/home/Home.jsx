@@ -1,10 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState} from 'react'
 import { Nav } from '../nav/Nav'
 import { Sliderbar } from '../slidebar/Sliderbar'
-import { Chat } from '../chat/chat'
-import { auth } from "../config/Firebase"
-import { useSelector } from 'react-redux'
 import { Profile } from '../profile/Profile'
+import { Chat } from '../chat/Chat'
 
 export const Home = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -14,28 +12,28 @@ export const Home = () => {
     const [page, setPage] = useState("home")
 
     const renderPage = () => {
-          switch (page) {
-             case "home":
+        switch (page) {
+            case "home":
                 return <>
                     <div className="relative lg:left-2 lg:m-0  m-3">
-                            <Chat isOpen={isOpen} setIsOpen={setIsOpen} />
-                        </div>
+                        <Chat isOpen={isOpen} setIsOpen={setIsOpen} />
+                    </div>
 
-                        <div className="hidden md:block mr-2">
-                            <Sliderbar />
-                        </div>
-                    </>
-            case "profile" : 
+                    <div className="hidden md:block mr-2">
+                        <Sliderbar />
+                    </div>
+                </>
+            case "profile":
 
                 return <Profile />
 
-            default : 
-                return <p className='text-white text-2xl' > page not fount  </p> 
-    }
+            default:
+                return <p className='text-white text-2xl' > page not fount  </p>
+        }
 
     }
 
-  
+
 
     return (
         <div className="flex items-center justify-center min-h-screen">

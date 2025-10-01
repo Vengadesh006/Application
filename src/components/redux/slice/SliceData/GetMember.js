@@ -1,14 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../../../Api";
 
-export const updateUserId = createAsyncThunk("/user/token", async ({id , formData, token }, { rejectWithValue }) => {
+export const getMemberFetch = createAsyncThunk("/user/token", async (token ,  { rejectWithValue }) => {
     try {
-        const res = await API.patch(`/auth/profile/${id}`,formData,  {
+        const res = await API.get(`/member`,  {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
-        console.log(res?.data)
         return await res?.data
 
     } catch (err) {
@@ -16,28 +15,28 @@ export const updateUserId = createAsyncThunk("/user/token", async ({id , formDat
     }
 })
 
-const updateUserSlice = createSlice({
-    name: "updateUser",
+const getMemberSlice = createSlice({
+    name: "memberId",
     initialState: {
-        updateId: null,
+        memberData: [],
         loading: false,
         errors: null
     },
     extraReducers: (builder) => {
-        builder.addCase(updateUserId.pending, (state) => {
+        builder.addCase(getMemberFetch.pending, (state) => {
             state.loading = true,
                 state.errors = null
         })
-            .addCase(updateUserId.fulfilled, (state, action) => {
-                state.updateId = action.payload
+            .addCase(getMemberFetch.fulfilled, (state, action) => {
+                state.memberData = action.payload
 
                 state.loading = false
             })
-            .addCase(updateUserId.rejected, (state, action) => {
+            .addCase(getMemberFetch.rejected, (state, action) => {
                 state.loading = false
                 state.errors = action.payload
             })
     }
 })
 
-export default updateUserSlice.reducer;
+export default getMemberSlice.reducer;

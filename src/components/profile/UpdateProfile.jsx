@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateUserId } from '../redux/slice/SliceData/updateUser';
+import { userGetId } from '../redux/slice/SliceData/userGetId';
 
-export const UpdateProfile = () => {
+export const UpdateProfile = ({modal, setModal}) => {
 
-  const { userId, loading } = useSelector(state => state.userGetStore )
+  const { userId } = useSelector(state => state.userGetStore)
+
+  const [loading, setLoading] = useState(false)
 
   const id = userId?.id
-  
+
   const token = localStorage.getItem('token')
 
   const dispatch = useDispatch()
@@ -21,6 +24,7 @@ export const UpdateProfile = () => {
     firstName: "",
     lastName: ""
   });
+
 
   useEffect(() => {
     if (userId) {
@@ -37,48 +41,69 @@ export const UpdateProfile = () => {
   }, [userId]);
 
   const onChangeEvent = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "avatar") {
-      setServerData(prev => ({ ...prev, [name]: files[0] }));
-    } else {
-      setServerData(prev => ({ ...prev, [name]: value }));
-    }
-  }
 
-  const handlerServe = (e) => {
-    
+    const { name, value, files, type } = e.target;
+
+    if (type === "file") {
+      setServerData((prev) => ({
+        ...prev,
+        [name]: files?.[0]
+      }));
+    } else {
+
+      setServerData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+
+    }
+  };
+  const handlerServe = async (e) => {
+
+    setLoading(true)
+
     e.preventDefault();
+
+    console.log(serverData)
 
     const formData = new FormData();
 
-    formData.append('username', serverData?.username)
+    formData.append("username", serverData?.username);
 
-    formData.append('password', serverData?.password)
+    formData.append("email", serverData?.email);
 
-    formData.append('email', serverData?.email)
+    formData.append("firstName", serverData?.firstName);
 
-    formData.append('firstName', serverData?.firstName)
+    formData.append("lastName", serverData?.lastName);
 
-    formData.append("lastName", serverData?.lastName)
-
-    if(serverData?.avatar && serverData?.avatar !== null && serverData?.avatar !== "" ){
-      formData.append("avatar", serverData?.avatar)
+    if (serverData?.avatar !== null) {
+      formData.append("avatar", serverData?.avatar);
     }
 
-     const res = dispatch(updateUserId({id, formData, token }))
+    formData.append("phone", serverData?.phone)
 
-     console.log(res);
-     
-    
-  }
+    try {
+      // wait for update API success
+      await dispatch(updateUserId({ id, formData, token })).unwrap();
 
- 
+      // then fetch updated profile again
+      dispatch(userGetId(token));
+
+      alert("Profile updated successfully ");
+      setLoading(false)
+      setModal(false)
+
+    } catch (err) {
+      console.error("Update failed:", err);
+    }
+  };
+
+  console.log("modal : ", modal)
+
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full p-1">
       <form className="flex flex-col gap-2" onSubmit={handlerServe}>
-        <h1 className="text-center text-xl">Profile</h1>
-
         {/* Username */}
         <div className="flex flex-col gap-2">
           <label>Username :</label>
@@ -140,7 +165,13 @@ export const UpdateProfile = () => {
         </div>
 
         {/* Avatar */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 border border-gray-300 p-3 rounded-xl ">
+          <div className="w-20 h-20">
+            <img className='w-full h-full object-cover rounded-xl'
+             src={`http://localhost:3000/upload/${userId?.avatar}`}
+             
+             alt={serverData?.username} />
+          </div>
           <label>Avatar :</label>
           <input
             type="file"
@@ -162,8 +193,13 @@ export const UpdateProfile = () => {
           />
         </div>
 
-        <button className="w-full py-3 bg-indigo-300 rounded-xl">
-          {loading ? "loading" : "update data"}
+        <button className="w-full py-3 bg-indigo-300 rounded-xl flex items-center justify-center gap-2">
+          {loading ? (<>
+            <div class="w-5 h-5 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <p> Loading.. </p>
+
+          </>) : (<h1> update profile </h1>)}
+
         </button>
       </form>
     </div>

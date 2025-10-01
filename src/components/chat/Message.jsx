@@ -91,8 +91,7 @@ export const Message = () => {
                                     <span>09:27</span>
                                 </div>
                         </div>
-                        
-
+                    
                     </div>
 
                 </div>
