@@ -3,6 +3,8 @@ import { MdOutlinePhotoCamera } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
 import { userGetId } from '../redux/slice/SliceData/userGetId';
 import { UpdateProfile } from './UpdateProfile';
+import { updateUserId } from '../redux/slice/SliceData/updateUser';
+import { getMemberFetch } from '../redux/slice/SliceData/GetMember';
 
 export const Profile = () => {
 
@@ -10,47 +12,76 @@ export const Profile = () => {
 
   const dispatch = useDispatch();
 
+  const token = localStorage.getItem("token")
+
   const { userId, loading } = useSelector((state) => state.userGetStore);
 
-  const token = localStorage.getItem('token');
+  const handleProfile = async (e) => {
 
-  useEffect(() => {
+    const file = e.target.files[0]
 
-    const serverFetch = async () => {
+    if (file) {
       try {
-        const res = await dispatch(userGetId(token)).unwrap()
-        console.log(res)
-      }
-      catch (err) {
-        console.log(err)
+        const formData = new FormData();
+
+        formData.append("avatar", file);
+
+        const id = userId?.id 
+
+        const res = await dispatch(updateUserId({id , formData , token })).unwrap();
+
+        dispatch(userGetId(token))
+
+        dispatch(getMemberFetch(token))
+
+        console.log("Upload success:", res);
+
+      } catch (err) {
+        console.error("Upload error:", err);
       }
     }
 
-    serverFetch()
 
-  }, [dispatch])
+  }
 
 
 
   return (
-    <div className="w-full h-full flex shadow-xl rounded-4xl relative overflow-hidden px-12 bg-white">
-      <div className="w-[90%] max-w-full h-full shadow-xl px-10 py-12">
+    <div className="h-[760px] w-full min-h-screen flex items-center justify-center rounded-4xl relative overflow-hidden border bg-white">
+      <div className="w-[90%] ">
         {/* Profile Image */}
-        <div className="relative w-48 h-48 rounded-full overflow-hidden">
+        <div className="relative w-38 h-38 rounded-full overflow-hidden group cursor-pointer">
+          {/* Image Preview */}
           <img
             src={
-              userId?.avatar
-                ? `http://localhost:3000/upload/${userId.avatar}`
-                : "/default-avatar.png"
+              userId?.avatar.startsWith("https") ? 
+              userId?.avatar :
+              `http://localhost:3000/upload/${userId.avatar}`
             }
             className="w-full h-full object-cover"
             alt="profile"
           />
-          <div className="absolute bottom-0 h-16 flex justify-center items-center w-full bg-[#272320]/80">
+
+          {/* Hidden file input */}
+          <input
+            type="file"
+            id="fileInput"
+            className="hidden"
+            onClick={handleProfile}
+          />
+
+          {/* Clickable overlay */}
+          <label
+            htmlFor="fileInput"
+            className="absolute bottom-0 h-16 flex justify-center items-center w-full bg-[#272320]/80 hover:bg-black/70 transition"
+          >
             <span className="text-2xl text-white">
               <MdOutlinePhotoCamera />
             </span>
-          </div>
+          </label>
+
+
+
         </div>
 
         {/* Section - 1 */}

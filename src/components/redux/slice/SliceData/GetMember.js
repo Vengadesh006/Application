@@ -1,13 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../../../Api";
 
-export const getMemberFetch = createAsyncThunk("/user/token", async (token ,  { rejectWithValue }) => {
+export const getMemberFetch = createAsyncThunk("/user/token", async (token, { rejectWithValue }) => {
     try {
-        const res = await API.get(`/member`,  {
+        const res = await API.get(`/chat-members`, {
             headers: {
-                Authorization: `Bearer ${token}`
-            }
+                Authorization: `Bearer ${token}`,
+            },
         })
+      
         return await res?.data
 
     } catch (err) {

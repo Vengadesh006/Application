@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getDatabase, limitToLast, onValue, push, query, ref, set } from "firebase/database"
+import { equalTo, get, getDatabase, limitToLast, onValue, orderByChild, push, query, ref, set, update }
+  from "firebase/database"
 
 const firebaseConfig = {
   apiKey: "AIzaSyCU0ls6zxbvglhyWxwnrItkU7-rbzfCDdk",
@@ -34,26 +35,26 @@ export const SENTMESSAGE = async (conventionId, text) => {
 }
 
 export const GETMESSAGE = async (conventionId, callback) => {
-  console.log("convent : ",conventionId);
-  
-    try{
-      const messageRef = ref(db , `/user/${conventionId}`)
-      onValue(messageRef, (snapshot) => {
-        callback(snapshot.val() || {})
-      })
+  console.log("convent : ", conventionId);
 
-    }
-    catch(err){
-      console.log(err)
-    }
+  try {
+    const messageRef = ref(db, `/user/${conventionId}`)
+    onValue(messageRef, (snapshot) => {
+      callback(snapshot.val() || {})
+    })
+
+  }
+  catch (err) {
+    console.log(err)
+  }
 }
 
 export const lastMessage = async (conventionId) => {
 
-  try{
+  try {
     const lastMessageRef = ref(db, `user/${conventionId}`)
 
-    const lastMsgRef = query(lastMessageRef, limitToLast(1) )
+    const lastMsgRef = query(lastMessageRef, limitToLast(1))
 
     onValue(lastMsgRef, (snapshot) => {
 
@@ -64,8 +65,37 @@ export const lastMessage = async (conventionId) => {
       })
     })
 
-  }catch(err){
+  } catch (err) {
     console.log(err)
   }
-  
+
 }
+export const MessageUpdate = async (conversationId, userId) => {
+  console.log("fire base : ", conversationId)
+
+  try {
+    const q = await query(
+      ref(db, `user/${conversationId}`),
+      orderByChild('receiverId'),
+      equalTo(userId)
+    )
+
+    const snapshot = await get(q)
+
+    const updates = [];
+    snapshot.forEach(child => {
+      const messageRef = ref(db, `user/${conversationId}/${child.key}`);
+      updates.push(update(messageRef, { read: true }));
+    });
+
+    await Promise.all(updates);
+
+    console.log();
+    
+
+
+
+  } catch (err) {
+    console.error("❌ Error updating messages:", err);
+  }
+};

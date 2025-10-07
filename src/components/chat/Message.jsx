@@ -12,7 +12,7 @@ export const Message = () => {
 
     return (
         <div>
-            <div className="flex flex-col gap-2 mt-4 w-full bg-transparent h-[735px] max-h-full bg-red-200 overflow-y-auto">
+            <div className="flex flex-col gap-2 mt-4 w-full bg-transparent h-[735px] bg-red-200 overflow-y-auto">
                 <div className="flex justify-start mb-2">
                     <div className="flex items-end">
                         <img src={user1} className="w-15 h-14 rounded-xl object-cover" alt="user" />
@@ -20,7 +20,7 @@ export const Message = () => {
 
                     <div className="bg-[#eeeffa] py-2 px-4 rounded-xl max-w-[340px] ">
                         <h5 className='mb-1 text-[#5e5a93]' > Deve </h5>
-                        <p className="text-base/5 text-sm ">I added new flows to our design system.
+                        <p className="text-base/5 ">I added new flows to our design system.
                             new you can use then the project
                         </p>
                         <div className="flex justify-between text-[#c4c5c8]  text-sm my-2">
@@ -48,7 +48,7 @@ export const Message = () => {
                         <img src={user3} className="w-15 h-14 rounded-md object-cover" alt="user" />
                     </div>
 
-                    <div className="flex flex-col  bg-[#eeeffa] px-4 py-2 rounded-xl max-w-md py-2 px-4 ">
+                    <div className="flex flex-col  bg-[#eeeffa]  rounded-xl max-w-md py-2 px-4 ">
                         <h5 className='text-sm' > Alex Hunt </h5>
                         <p className="text-base/6 text-sm"> our intern @jchurch has successfullly completed his
                             probationary period and is now part our taem . </p>

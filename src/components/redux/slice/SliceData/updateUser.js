@@ -9,10 +9,10 @@ export const updateUserId = createAsyncThunk("/user/token", async ({id , formDat
             }
         })
         console.log(res?.data)
-        return await res?.data
+        return await res?.data?.message
 
     } catch (err) {
-        return rejectWithValue(err?.message)
+        return rejectWithValue(err.response?.data?.message)
     }
 })
 

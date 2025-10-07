@@ -6,9 +6,12 @@ import { FILTER_USER } from "../redux/slice/SliceData/filterUser";
 import { Sentmessage } from "./Sentmessage";
 import { memberFetch } from "../redux/slice/SliceData/memberSlice";
 import { Chatmembers } from "./Chatmembers";
-import { GETMESSAGE, SENTMESSAGE } from "../config/Firebase";
+import { GETMESSAGE, MessageUpdate, SENTMESSAGE } from "../config/Firebase";
+import { toast } from "react-toastify";
+import { getMemberFetch } from "../redux/slice/SliceData/GetMember";
 
 export const Chat = ({ isOpen, setIsOpen }) => {
+
   const dispatch = useDispatch();
 
   const token = localStorage.getItem("token");
@@ -19,51 +22,86 @@ export const Chat = ({ isOpen, setIsOpen }) => {
 
   const [receiverId, setReceiverId] = useState(null);
 
-  const [chatMember, setChatMember] = useState("")
-
   const [searchInput, setSearchInput] = useState({ username: "" });
 
   const deferredQuery = useDeferredValue(searchInput.username);
+
+  const [currentUser, setCurentUser] = useState("")
 
   const { filterItems, loading, errors } = useSelector(
     (state) => state.userFilterStore
   );
   const { userId } = useSelector((state) => state.userGetStore);
 
+  const [index, setIndex] = useState([])
+
   // set sender id 
   const senderId = userId?.id
 
-  // Set receiver
-  const MEMBERID = (user) => {
-    setReceiverId(user?.receiverId);
-    setChatMember(user?.username)
-    console.log("Receiver Selected:", user?.receiverId);
+  const MEMBERID = async (user, i) => {
+
+    setReceiverId(user?.userId)
+
+    setCurentUser(user?.username)
+
+    setIndex(i)
+
+    let conventionId = [senderId, user?.userId].sort().join("-")
+
+    console.log(conventionId)
+
+    if (conventionId) {
+      try {
+        MessageUpdate(conventionId, senderId)
+        const res = await dispatch(getMemberFetch(token)).unwrap()
+        console.log(res);
+        
+
+      }
+      catch(err){
+        console.log(err);
+        
+      }
+    
+    }
+
   };
 
+  console.log(receiverId)
+
   const conventionId = [senderId, receiverId].sort().join("-")
+
+  console.log(conventionId);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSearchInput({ ...searchInput, [name]: value });
   };
 
-  // Filter users
   useEffect(() => {
     const filterQuery = async () => {
+
       if (!deferredQuery.trim()) return;
+
       try {
         const res = await dispatch(
+
           FILTER_USER({ text: deferredQuery, token })
         ).unwrap();
+
         console.log("Filtered Users:", res);
+
       } catch (err) {
+
         console.error("Filter error:", err);
       }
     };
+
     filterQuery();
+
   }, [deferredQuery, dispatch, token]);
 
-  // Memoized filtered users
   const filteredUsers = useMemo(() => {
     if (!deferredQuery) return [];
     return filterItems.filter((item) =>
@@ -72,11 +110,11 @@ export const Chat = ({ isOpen, setIsOpen }) => {
   }, [filterItems, deferredQuery]);
 
 
-  // Send chat message
   const CHATMESSAGE = () => {
 
     if (!senderId || !receiverId) {
       console.warn("No sender/receiver selected");
+      toast.warning("No sender/receiver selected")
       return;
     }
 
@@ -84,6 +122,7 @@ export const Chat = ({ isOpen, setIsOpen }) => {
       senderId,
       receiverId,
       text,
+      read: false,
       timestamp: Date.now(),
     };
 
@@ -105,26 +144,17 @@ export const Chat = ({ isOpen, setIsOpen }) => {
 
   const ADD_MEMBER = async (member) => {
 
-    const payload = {
-      receiverId: member?.id,
-      lastMessage: "hay",
-    };
+    setCurentUser(member?.username)
 
-
-    try {
-      const res = await dispatch(memberFetch({ payload, token })).unwrap();
-      console.log("Member Added:", res);
-    } catch (err) {
-      console.error("Add member error:", err);
-    }
+    setReceiverId(member?.id)
   };
 
+
   return (
-    <div className="w-full h-full flex shadow-xl bg-white rounded-4xl relative overflow-hidden">
-      {/* Sidebar */}
-      <div className="flex flex-col w-full lg:w-2/6 bg-transparent py-4">
+    <div className="w-full  min-h-screen shadow-xl grid grid-cols-1 lg:grid-cols-[1fr_2fr] bg-white rounded-3xl relative py-3 ">
+      <div className="flex flex-col  w-full 2 border-r border-gray-200  px-2 ">
         <div className="flex justify-between items-center bg-transparent rounded-md">
-          <div className="flex flex-1 items-center gap-2 ml-5 py-1 mr-4 px-2 bg-[#dbdcfe] rounded-xl">
+          <div className="flex flex-1 items-center gap-2  py-1 mr-4 px-2 bg-[#dbdcfe] rounded-xl">
             <CiSearch className="text-2xl" />
             <input
               type="text"
@@ -146,7 +176,7 @@ export const Chat = ({ isOpen, setIsOpen }) => {
         </div>
 
         {/* User List */}
-        <div className="flex flex-col overflow-y-auto mt-3">
+        <div className="flex flex-col mt-2 w-full h-auto min-h-[90vh]  rounded-2xl  ">
           {loading && <p className="text-center text-gray-500">Loading...</p>}
           {errors && <p className="text-center text-red-500">{errors}</p>}
 
@@ -173,19 +203,23 @@ export const Chat = ({ isOpen, setIsOpen }) => {
               </div>
             ))
           ) : (
-            <Chatmembers MEMBERID={MEMBERID} />
+            <Chatmembers MEMBERID={MEMBERID} index={index} />
           )}
         </div>
       </div>
 
-      {/* Chat Area */}
+
+
+
       <Sentmessage
         text={text}
         message={message}
         setText={setText}
         CHATMESSAGE={CHATMESSAGE}
-        chatMember={chatMember}
+        chatMember={currentUser}
+
       />
+
     </div>
   );
 };

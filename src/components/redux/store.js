@@ -5,6 +5,9 @@ import userGetReduce from "./slice/SliceData/userGetId"
 import updateUserReduce from "./slice/SliceData/updateUser"
 import filterUserReduce from "./slice/SliceData/filterUser"
 import getMemberReduce from "./slice/SliceData/GetMember"
+import googleReduce from "./slice/SliceData/googleUser"
+
+
 
 const store = configureStore({
     reducer : {
@@ -13,7 +16,8 @@ const store = configureStore({
         userGetStore : userGetReduce,
         userUpdateStore : updateUserReduce, 
         userFilterStore : filterUserReduce, 
-        memberStrore : getMemberReduce
+        memberStrore : getMemberReduce, 
+        googleStore : googleReduce
     }
 })
 

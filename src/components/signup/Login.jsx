@@ -7,12 +7,15 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { IoPersonOutline } from "react-icons/io5";
 import { TbPhone } from "react-icons/tb"
-import { onAuthStateChanged, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, onAuthStateChanged, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvide } from "../config/Firebase"
 import { signupFetch } from '../redux/slice/SliceData/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginFetch } from '../redux/slice/SliceData/verifyUserSlice';
 import { useNavigate } from 'react-router-dom';
+import { toast } from "react-toastify"
+import { GoogleAuth } from '../redux/slice/SliceData/googleUser';
+
 
 export const Login = () => {
 
@@ -78,17 +81,22 @@ export const Login = () => {
 
         if (Object.values(errorCheck).length !== 0) return
 
+        const num = parseInt(phone)
+
         if (sign) {
             const payload = {
                 username,
                 password,
                 email,
-                phone,
+                phone: num,
             };
 
+            console.log(payload)
+
             try {
-                const res = await dispatch(signupFetch(payload)).unwrap(); 
+                const res = await dispatch(signupFetch(payload)).unwrap();
                 console.log("Signup success:", res);
+                toast.success(res)
 
                 setUsername("");
                 setPassword("");
@@ -96,8 +104,10 @@ export const Login = () => {
                 setPhone("");
             } catch (err) {
                 console.error("Signup failed:", err);
-            }
+                toast.error(err || err.message)
 
+            }
+            setSign(!sign)
         }
         else {
             const payload = {
@@ -107,14 +117,23 @@ export const Login = () => {
             try {
                 const storage = await dispatch(loginFetch(payload)).unwrap();
 
+                console.log(storage?.message)
+
+                toast.success(storage?.message)
+
                 localStorage.setItem("token", storage?.token);
-               
+
                 setEmail("")
                 setPassword("")
                 navigate("/");
 
             } catch (err) {
-                console.error("Login failed:", err);
+                if(err.message) {
+                    toast.error("Network Error", err)
+                }else {
+                    toast.error(err)
+                }
+             
             }
 
         }
@@ -131,26 +150,21 @@ export const Login = () => {
 
             const user = result?.user
 
-            const g_id = await user?.getIdToken()
-
-            console.log("token : ", g_id);
-            
-
-            const payload = {
-                "username": user?.displayName,
-                "email": user?.email,
-                "avatar": user?.photoURL,
-                "phone": user?.phoneNumber,
-                "types": "Google",
-                "password": ""
+            const googleInfo = {
+                username: user.displayName,
+                email: user.email,
+                avatar: user.photoURL,
+                socialId: user.uid,
+                types: "Google"
             }
 
-            console.log(payload)
-            
-            
-            const res = await dispatch(signupFetch(payload)).unwrap() 
+            const res = await dispatch(GoogleAuth(googleInfo)).unwrap()
 
-            console.log(res)
+            const token = localStorage.setItem("token", res?.token)
+
+            toast.success("google ", res.message)
+
+            navigate("/")
 
 
         } catch (err) {
@@ -224,7 +238,7 @@ export const Login = () => {
 
                     {/* password */}
                     <div className="flex flex-col gap-1">
-                        <div className="flex items-center border px-3  border border-gray-200">
+                        <div className="flex items-center px-3 border border-gray-200">
                             <span className='text-2xl mx-[6px] text-gray-400' > <CiLock /> </span>
                             <input type={eye ? "text" : "password"}
                                 className='w-full outline-none py-2 bg-white  placeholder:text-sm placeholder:tracking-wide '
@@ -268,9 +282,12 @@ export const Login = () => {
                         </div>
                     </div>
                     {/* button area */}
-                    <button className='w-full py-2 bg-[#dbdcff] text-white font-medium rounded-xl mb-3' > Log in </button>
+                    <button className='w-full py-2 bg-[#7477c5]  text-white font-medium rounded-xl mb-3' > Log in </button>
 
-                    <p className='text-sm text-center' > don't have account ? <span onClick={() => setSign(!sign)} href="" className='text-blue-500 underline text-base/6' > create an account </span> </p>
+                    <p className='text-sm text-center' > don't have account ?
+                        <span onClick={() => setSign(!sign)} href="" className='text-blue-500 underline text-base/6 underline-offset-2' >
+                            {!sign ? " create an account" : " login account"} </span>
+                    </p>
 
                 </div>
             </form>

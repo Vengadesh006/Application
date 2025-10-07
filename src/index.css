@@ -3,10 +3,9 @@
 body{
   cursor: pointer;
   font-family: 'Roboto', sans-serif;
- 
 }
  
 
 ::-webkit-scrollbar {
-  display: none; /* removes scrollbar in WebKit browsers */
+  display: none; 
 }

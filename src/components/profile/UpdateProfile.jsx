@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateUserId } from '../redux/slice/SliceData/updateUser';
 import { userGetId } from '../redux/slice/SliceData/userGetId';
+import { toast } from 'react-toastify';
+import { getMemberFetch } from '../redux/slice/SliceData/GetMember';
 
-export const UpdateProfile = ({modal, setModal}) => {
+export const UpdateProfile = ({ modal, setModal }) => {
 
   const { userId } = useSelector(state => state.userGetStore)
 
@@ -14,6 +16,8 @@ export const UpdateProfile = ({modal, setModal}) => {
   const token = localStorage.getItem('token')
 
   const dispatch = useDispatch()
+
+  const [image, setImage] = useState(null)
 
   const [serverData, setServerData] = useState({
     username: "",
@@ -45,6 +49,11 @@ export const UpdateProfile = ({modal, setModal}) => {
     const { name, value, files, type } = e.target;
 
     if (type === "file") {
+
+      const file = files[0]
+
+      setImage(URL.createObjectURL(file))
+
       setServerData((prev) => ({
         ...prev,
         [name]: files?.[0]
@@ -58,6 +67,9 @@ export const UpdateProfile = ({modal, setModal}) => {
 
     }
   };
+
+  console.log(userId?.avatar)
+
   const handlerServe = async (e) => {
 
     setLoading(true)
@@ -83,23 +95,22 @@ export const UpdateProfile = ({modal, setModal}) => {
     formData.append("phone", serverData?.phone)
 
     try {
-      // wait for update API success
-      await dispatch(updateUserId({ id, formData, token })).unwrap();
 
-      // then fetch updated profile again
+      const res = await dispatch(updateUserId({ id, formData, token })).unwrap()
+
       dispatch(userGetId(token));
 
-      alert("Profile updated successfully ");
+      dispatch(getMemberFetch(token))
+
       setLoading(false)
       setModal(false)
 
+      toast.success(res)
+
     } catch (err) {
-      console.error("Update failed:", err);
+      console.error(err);
     }
   };
-
-  console.log("modal : ", modal)
-
 
   return (
     <div className="w-full p-1">
@@ -167,10 +178,26 @@ export const UpdateProfile = ({modal, setModal}) => {
         {/* Avatar */}
         <div className="flex flex-col gap-2 border border-gray-300 p-3 rounded-xl ">
           <div className="w-20 h-20">
-            <img className='w-full h-full object-cover rounded-xl'
-             src={`http://localhost:3000/upload/${userId?.avatar}`}
-             
-             alt={serverData?.username} />
+            {userId?.avatar?.startsWith("https") ? (
+              <img
+                className="w-full h-full object-cover rounded-xl"
+                src={userId.avatar}
+                alt="user image"
+              />
+            ) : !image ? (
+              <img
+                className="w-full h-full object-cover rounded-xl"
+                src={`http://localhost:3000/upload/${userId?.avatar}`}
+                alt="user image"
+              />
+            ) : (
+              <img
+                className="w-full h-full object-cover rounded-xl"
+                src={image}
+                alt="user image"
+              />
+            )}
+
           </div>
           <label>Avatar :</label>
           <input
@@ -193,7 +220,7 @@ export const UpdateProfile = ({modal, setModal}) => {
           />
         </div>
 
-        <button className="w-full py-3 bg-indigo-300 rounded-xl flex items-center justify-center gap-2">
+        <button className="w-full py-3 bg-indigo-500 hover:bg-indigo-400 rounded-xl flex items-center justify-center gap-2">
           {loading ? (<>
             <div class="w-5 h-5 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             <p> Loading.. </p>
