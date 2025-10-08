@@ -6,7 +6,7 @@ export const signupFetch = createAsyncThunk(
   async (info, { rejectWithValue }) => {
     try {
       const res = await API.post("/auth/signup", info);  
-      console.log(res.data);
+      
       return res?.data?.message;  
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);

@@ -12,12 +12,17 @@ import { MdLogin } from "react-icons/md";
 import { Profile } from '../profile/Profile';
 import { Home } from "../home/Home"
 import { useSelector } from 'react-redux';
-
+import { CiLogout } from "react-icons/ci";
 import { Link } from 'react-router-dom';
 
 export const Nav = ({ isOpen, setPage, setIsOpen }) => {
 
- 
+  const [isLog, setIsLog] = useState(false)
+
+  const Logout = () => {
+      localStorage.removeItem('token')
+      setIsLog(true)
+  }
 
   return (
     <div
@@ -44,34 +49,34 @@ export const Nav = ({ isOpen, setPage, setIsOpen }) => {
           onClick={() => setPage("home")}
         >
           <IoMdChatboxes className="text-[28px]" />
-          <span className="absolute top-0 right-4 p-[3px] flex items-center justify-center text-xs bg-orange-500 text-white rounded-full">
+          <span className="absolute top-0 right-4 p-[5px] flex items-center justify-center text-xs bg-orange-500 text-white rounded-full">
             23
           </span>
           <p className="text-xs mt-1">Chats</p>
         </li>
         <li className="size-19 flex flex-col items-center justify-center cursor-pointer hover:text-[#f1f1f1] relative hover:bg-[#464646] hover:rounded-lg"
-        
+
         >
           <FaFolder className="text-[23px]" />
-            <span className="absolute top-0 right-3 p-[4px] flex items-center justify-center  text-xs bg-orange-500 text-white text-whit rounded-full">
-              42
-            </span>
+          <span className="absolute top-0 right-3 p-[5px] flex items-center justify-center  text-xs bg-orange-500 text-white text-whit rounded-full">
+            42
+          </span>
           <p className="text-xs mt-1">Work</p>
         </li>
         <li
-        
+
           className="size-19 flex flex-col items-center justify-center cursor-pointer  hover:text-[#f1f1f1] hover:bg-[#464646] hover:rounded-lg">
           <FaFolderOpen className="text-[23px]" />
           <p className="text-xs mt-1">Friends</p>
         </li>
         <li
-        
+
           className="size-19 flex flex-col items-center justify-center cursor-pointer  hover:text-[#f1f1f1] hover:bg-[#464646] hover:rounded-lg ">
           <FaFolderOpen className="text-[23px]" />
           <p className="text-xs mt-1">News</p>
         </li>
         <li
-        
+
           className="size-19 flex flex-col items-center justify-center cursor-pointer  hover:text-[#f1f1f1] hover:bg-[#464646] hover:rounded-lg">
           <FaFolderOpen className="text-[23px]" />
           <p className="text-xs mt-1">Archive</p>
@@ -86,7 +91,7 @@ export const Nav = ({ isOpen, setPage, setIsOpen }) => {
           <p className="text-xs mt-1">Profile</p>
         </li>
         <li
-        
+
           className="size-19 flex flex-col items-center justify-center cursor-pointer  hover:text-[#f1f1f1] hover:bg-[#464646] hover:rounded-lg ">
           <RiEditBoxLine className="text-[23px]" />
           <p className="text-xs mt-1">Edit</p>
@@ -94,11 +99,21 @@ export const Nav = ({ isOpen, setPage, setIsOpen }) => {
       </ul>
 
       {/* Logout */}
-      <div className="cursor-pointer">
-        <Link to="/login" >
-          <MdOutlineLogout className="text-[23px]" />
-          <p className="text-xs tracking-wide"> login </p>
-        </Link>
+      <div className="cursor-pointer" onClick={Logout} >
+        {isLog ? (
+          <Link to="/login" >
+            <MdOutlineLogout className="text-[23px]" />
+            <p className="text-xs tracking-wide"> login </p>
+          </Link>
+        ) : (
+          <span>
+            <CiLogout className="text-[23px]" />
+            <p className="text-xs tracking-wide"> logout </p>
+          </span>
+        )
+
+        }
+
       </div>
     </div>
   )

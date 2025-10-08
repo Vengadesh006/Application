@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../../../Api";
 
 export const getMemberFetch = createAsyncThunk("/user/token", async (token, { rejectWithValue }) => {
+    
     try {
         const res = await API.get(`/chat-members`, {
             headers: {
@@ -9,10 +10,10 @@ export const getMemberFetch = createAsyncThunk("/user/token", async (token, { re
             },
         })
       
-        return await res?.data
+        return  res?.data
 
     } catch (err) {
-        return rejectWithValue(err?.message)
+        return rejectWithValue(err.response?.data?.message)
     }
 })
 

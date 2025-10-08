@@ -43,7 +43,7 @@ export const Sliderbar = () => {
 
       {/* Shared Files Section */}
       <div
-        class="bg-white mb-2 rounded-3xl py-4 px-5 
+        className="bg-white mb-2 rounded-3xl py-4 px-5 
     "
       >
         <div className="flex justify-between items-center">

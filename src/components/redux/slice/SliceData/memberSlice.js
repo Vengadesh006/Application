@@ -8,8 +8,8 @@ export const memberFetch = createAsyncThunk("/user/token", async ({ payload , to
                 Authorization: `Bearer ${token}`
             }
         })
-        console.log(res?.data)
-        return await res?.data
+      
+        return  res?.data
 
     } catch (err) {
         return rejectWithValue(err?.message)

@@ -9,6 +9,7 @@ import { Chatmembers } from "./Chatmembers";
 import { GETMESSAGE, MessageUpdate, SENTMESSAGE } from "../config/Firebase";
 import { toast } from "react-toastify";
 import { getMemberFetch } from "../redux/slice/SliceData/GetMember";
+import { IMAGE_URL } from "../../Image";
 
 export const Chat = ({ isOpen, setIsOpen }) => {
 
@@ -35,44 +36,39 @@ export const Chat = ({ isOpen, setIsOpen }) => {
 
   const [index, setIndex] = useState([])
 
+  const [show, setShow] = useState([])
+
   // set sender id 
   const senderId = userId?.id
 
   const MEMBERID = async (user, i) => {
-
     setReceiverId(user?.userId)
 
     setCurentUser(user?.username)
 
     setIndex(i)
 
-    let conventionId = [senderId, user?.userId].sort().join("-")
+    setShow(i)
 
-    console.log(conventionId)
+    let conventionId = [senderId, user?.userId].sort().join("-")
 
     if (conventionId) {
       try {
+
         MessageUpdate(conventionId, senderId)
+
         const res = await dispatch(getMemberFetch(token)).unwrap()
-        console.log(res);
-        
 
       }
-      catch(err){
+      catch (err) {
         console.log(err);
-        
+
       }
-    
+
     }
 
   };
-
-  console.log(receiverId)
-
   const conventionId = [senderId, receiverId].sort().join("-")
-
-  console.log(conventionId);
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -90,7 +86,6 @@ export const Chat = ({ isOpen, setIsOpen }) => {
           FILTER_USER({ text: deferredQuery, token })
         ).unwrap();
 
-        console.log("Filtered Users:", res);
 
       } catch (err) {
 
@@ -136,8 +131,6 @@ export const Chat = ({ isOpen, setIsOpen }) => {
     if (!userId?.id || !receiverId) return;
 
     GETMESSAGE(conventionId, (data) => setMessage(data || []));
-
-    console.log("Listening on:", conventionId);
 
   }, [userId?.id, receiverId]);
 
@@ -188,9 +181,13 @@ export const Chat = ({ isOpen, setIsOpen }) => {
                 onClick={() => ADD_MEMBER(user)}
               >
                 <img
-                  src={`http://localhost:3000/upload/${user.avatar}`}
-                  alt={user.username}
-                  className="w-16 h-16 object-cover rounded-md"
+                  src={
+                    user?.avatar?.startsWith("https")
+                      ? user.avatar
+                      : `${IMAGE_URL}/${user.avatar}`
+                  }
+                  className="w-full h-full object-cover"
+                  alt="profile"
                 />
                 <div>
                   <h1 className="text-base font-medium mb-1">
@@ -203,13 +200,10 @@ export const Chat = ({ isOpen, setIsOpen }) => {
               </div>
             ))
           ) : (
-            <Chatmembers MEMBERID={MEMBERID} index={index} />
+            <Chatmembers MEMBERID={MEMBERID} index={index} show={show} />
           )}
         </div>
       </div>
-
-
-
 
       <Sentmessage
         text={text}

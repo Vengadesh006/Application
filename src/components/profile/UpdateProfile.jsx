@@ -4,6 +4,7 @@ import { updateUserId } from '../redux/slice/SliceData/updateUser';
 import { userGetId } from '../redux/slice/SliceData/userGetId';
 import { toast } from 'react-toastify';
 import { getMemberFetch } from '../redux/slice/SliceData/GetMember';
+import { IMAGE_URL } from '../../Image';
 
 export const UpdateProfile = ({ modal, setModal }) => {
 
@@ -181,13 +182,13 @@ export const UpdateProfile = ({ modal, setModal }) => {
             {userId?.avatar?.startsWith("https") ? (
               <img
                 className="w-full h-full object-cover rounded-xl"
-                src={userId.avatar}
+                src={`${userId?.avatar}`}
                 alt="user image"
               />
             ) : !image ? (
               <img
                 className="w-full h-full object-cover rounded-xl"
-                src={`http://localhost:3000/upload/${userId?.avatar}`}
+                src={`${IMAGE_URL}/${userId?.avatar}`}
                 alt="user image"
               />
             ) : (

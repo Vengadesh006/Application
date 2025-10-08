@@ -6,8 +6,9 @@ import updateUserReduce from "./slice/SliceData/updateUser"
 import filterUserReduce from "./slice/SliceData/filterUser"
 import getMemberReduce from "./slice/SliceData/GetMember"
 import googleReduce from "./slice/SliceData/googleUser"
-
-
+import VerifyEmailReduce from "./slice/SliceData/VerifyEmail"
+import OTPVerifyReduce from "./slice/SliceData/OtpVerify"
+import ChangePassword from "./slice/SliceData/changePassword"
 
 const store = configureStore({
     reducer : {
@@ -17,7 +18,10 @@ const store = configureStore({
         userUpdateStore : updateUserReduce, 
         userFilterStore : filterUserReduce, 
         memberStrore : getMemberReduce, 
-        googleStore : googleReduce
+        googleStore : googleReduce, 
+        emailVerifyStore : VerifyEmailReduce, 
+        OtpVerifyStore : OTPVerifyReduce, 
+        chagePasswordStore : ChangePassword
     }
 })
 

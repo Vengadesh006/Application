@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { equalTo, get, getDatabase, limitToLast, onValue, orderByChild, push, query, ref, set, update }
+import { equalTo, get, getDatabase, limitToLast, onDisconnect, onValue, orderByChild, push, query, ref, serverTimestamp, set, update }
   from "firebase/database"
 
 const firebaseConfig = {
@@ -91,11 +91,43 @@ export const MessageUpdate = async (conversationId, userId) => {
     await Promise.all(updates);
 
     console.log();
-    
+
 
 
 
   } catch (err) {
-    console.error("❌ Error updating messages:", err);
+    console.error(" Error updating messages:", err);
+  }
+};
+
+
+
+export const userStatus = async (userId) => {
+  try {
+    const userStatusRef = ref(db, `/userStatus/${userId}`);
+    const connectedRef = ref(db, ".info/connected");
+
+    onValue(connectedRef, (snapshot) => {
+      const isConnected = snapshot.val();
+
+      if (isConnected === false || isConnected === null) return;
+
+      // When user connects
+      const con = userStatusRef;
+
+      // Set the disconnect logic FIRST — this triggers when user goes offline
+      onDisconnect(con).set({
+        status: "offline",
+        last_seen: serverTimestamp(),
+      });
+
+      // Then mark user online
+      set(con, {
+        status: "online",
+        last_seen: serverTimestamp(),
+      });
+    });
+  } catch (err) {
+    console.error("Error in userStatus:", err);
   }
 };

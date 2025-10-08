@@ -1,40 +1,110 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { OtpVerify } from "../redux/slice/SliceData/OtpVerify";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
-export const VerifiyOtp  = () => {
+export const VerifiyOtp = () => {
+
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+
   const inputRefs = useRef([]);
 
-  // Handle input change
-  const handleChange = (element, index) => {
-    const value = element.value.replace(/\D/, ""); // allow only digits
-    if (!value) return;
+  const { emailInfo } = useSelector(state => state.emailVerifyStore)
 
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
+  const dispatch = useDispatch()
 
-    // Move to next box
-    if (index < 5 && value) inputRefs.current[index + 1].focus();
+  const navigate = useNavigate()
+
+  useEffect(() => {
+
+    inputRefs.current[0]?.focus();
+
+  }, []);
+
+  const handleChange = (e, index) => {
+
+    const value = e.target.value.replace(/\D/g, "");
+
+    if (value.length > 1) {
+
+      const valueArray = value.split("").slice(0, 6);
+      const newOtp = [...otp];
+      for (let i = 0; i < valueArray.length; i++) {
+        if (index + i < 6) newOtp[index + i] = valueArray[i];
+      }
+      setOtp(newOtp);
+
+
+      const nextIndex = Math.min(index + valueArray.length, 5);
+      inputRefs.current[nextIndex]?.focus();
+    } else {
+
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+
+      if (value && index < 5) {
+        inputRefs.current[index + 1]?.focus();
+      }
+    }
   };
 
-  // Handle backspace
   const handleKeyDown = (e, index) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      inputRefs.current[index - 1].focus();
+    if (e.key === "Backspace") {
+      const newOtp = [...otp];
+      if (otp[index]) {
+        newOtp[index] = "";
+        setOtp(newOtp);
+      } else if (index > 0) {
+        inputRefs.current[index - 1]?.focus();
+      }
     }
   };
 
-  // Handle submit
-  const handleSubmit = (e) => {
+  const handlePaste = async (e, index) => {
+
     e.preventDefault();
-    const otpCode = otp.join("");
-    if (otpCode.length < 6) {
-      alert("Please enter a valid 6-digit code");
-      return;
+    const pasteData = e.clipboardData.getData("text").replace(/\D/g, "");
+    if (!pasteData) return;
+
+    const pasteArray = pasteData.split("").slice(0, 6);
+    const newOtp = [...otp];
+
+    for (let i = 0; i < pasteArray.length; i++) {
+      if (index + i < 6) newOtp[index + i] = pasteArray[i];
     }
-    console.log("OTP Submitted:", otpCode);
-    // TODO: Send otpCode to your backend for verification
+
+    setOtp(newOtp);
+    const nextIndex = Math.min(index + pasteArray.length, 5);
+    inputRefs.current[nextIndex]?.focus();
   };
+
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const otpCode = otp.join("");
+      if (otpCode.length !== 6) {
+        alert("Please enter a valid 6-digit code");
+        return;
+      }
+
+      const payload = {
+        email: emailInfo?.email,
+        otp: parseInt(otpCode),
+      };
+
+      const res = await dispatch(OtpVerify(payload)).unwrap();
+      toast.success(res?.message || "OTP verified successfully!");
+      navigate("/chage-password")
+
+    } catch (err) {
+      console.log("Error:", err);
+      toast.error(err?.message || err?.error || "OTP verification failed!");
+    }
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
@@ -48,7 +118,7 @@ export const VerifiyOtp  = () => {
             Please enter your 6-digit code
           </p>
           <p className="text-blue-600 underline mt-2 text-sm">
-            vengade13@gmail.com
+            { emailInfo?.email }
           </p>
         </div>
 
@@ -64,11 +134,10 @@ export const VerifiyOtp  = () => {
                 pattern="[0-9]*"
                 className="w-12 h-14 border border-gray-300 text-center text-xl rounded-md shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                 value={digit}
-                onChange={(e) => handleChange(e.target, index)}
+                onChange={(e) => handleChange(e, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
+                onPaste={(e) => handlePaste(e, index)}
                 ref={(el) => (inputRefs.current[index] = el)}
-                aria-label={`OTP digit ${index + 1}`}
-                required
               />
             ))}
           </div>
@@ -90,4 +159,3 @@ export const VerifiyOtp  = () => {
     </div>
   );
 };
-

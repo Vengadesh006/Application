@@ -44,15 +44,15 @@ export const Home = () => {
         const serverFetch = async () => {
             try {
                 const res = await dispatch(userGetId(token)).unwrap();
-                console.log(res);
+              
             } catch (err) {
                 console.log(err);
                 toast.error("Please go to the Login page.");
 
-
                 setTimeout(() => {
                     navigate("/login");
                 }, 2000);
+
             }
         };
 
@@ -77,9 +77,4 @@ export const Home = () => {
 
     )
 }
-//  grid grid-cols-1 sm:grid-cols-[73px_auto] md:grid-cols-[73px_3fr]
-//  lg:grid-cols-[73px_3fr]
-//
-// 
-
 

@@ -12,9 +12,10 @@ import { auth, googleProvide } from "../config/Firebase"
 import { signupFetch } from '../redux/slice/SliceData/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginFetch } from '../redux/slice/SliceData/verifyUserSlice';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify"
 import { GoogleAuth } from '../redux/slice/SliceData/googleUser';
+import { Email } from './Email';
 
 
 export const Login = () => {
@@ -34,6 +35,8 @@ export const Login = () => {
     const [phone, setPhone] = useState('')
 
     const [error, setError] = useState({})
+
+    const [modal, setModal] = useState(false)
 
     const dispatch = useDispatch()
 
@@ -128,12 +131,12 @@ export const Login = () => {
                 navigate("/");
 
             } catch (err) {
-                if(err.message) {
+                if (err.message) {
                     toast.error("Network Error", err)
-                }else {
+                } else {
                     toast.error(err)
                 }
-             
+
             }
 
         }
@@ -278,7 +281,7 @@ export const Login = () => {
                             <input type="checkbox" id='box' /> <label htmlFor="box" className='text-gray-400' > Remember me </label>
                         </div>
                         <div className="">
-                            <a href="" className='text-blue-500' > Forgot Password </a>
+                            <div to="/verifiy-email" className='text-blue-500' onClick={() => setModal(true)} > Forgot Password </div>
                         </div>
                     </div>
                     {/* button area */}
@@ -293,6 +296,30 @@ export const Login = () => {
             </form>
 
 
+            {modal && (
+                <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/50 p-4">
+                    {/* Modal Box */}
+                    <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md">
+
+                        {/* Header */}
+                        <div className="flex justify-between items-center border-b px-4 py-3">
+                            <h2 className="text-lg font-semibold text-gray-700">Verify Email</h2>
+                            <button
+                                onClick={() => setModal(false)}
+                                className="text-gray-500 hover:text-gray-800 transition"
+                                aria-label="Close modal"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {/* Body */}
+                        <div className="p-5">
+                            <Email />
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

@@ -6,9 +6,10 @@ import { Login } from './components/signup/Login'
 import { UpdateProfile } from './components/profile/UpdateProfile'
 import { Modal } from './components/profile/Modal'
 import { MobileChat } from './components/switch/MobileChat'
-import {ToastContainer} from "react-toastify"
+import { ToastContainer } from "react-toastify"
 import { VerifiyOtp } from './components/signup/VerifiyOtp'
 import { ForgotPass } from './components/signup/ForgotPass'
+import { Email } from './components/signup/Email'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -16,13 +17,14 @@ function App() {
   return (
     <>
       <BrowserRouter>
-      <ToastContainer position='bottom-right' />
+        <ToastContainer position='bottom-right' />
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/login' element={<Login />} />
-          <Route path='/chat' element={<MobileChat />}  />
-          <Route path='/verify-otp' element = { <VerifiyOtp /> } />
-          <Route path='/chage-password' element={ <ForgotPass /> } />
+          <Route path='/chat' element={<MobileChat />} />
+          <Route path='/verify-otp' element={<VerifiyOtp />} />
+          <Route path='/chage-password' element={<ForgotPass />} />
+          <Route path='/verifiy-email' element={<Email />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { CiSearch } from "react-icons/ci";
 import { HiOutlinePhone } from "react-icons/hi2";
 import { HiOutlineDotsVertical } from "react-icons/hi";
@@ -6,14 +6,29 @@ import { MdOutlineKeyboardVoice, MdOutlineFileUpload } from "react-icons/md";
 import { LiaTelegramPlane } from "react-icons/lia";
 import { useSelector } from "react-redux";
 import { Message } from "./Message";
+import { db } from "../config/Firebase";
+import { onValue, ref } from "firebase/database";
 
-export const Sentmessage = ({ text, message, setText, CHATMESSAGE, chatMember }) => {
+export const Sentmessage = ({ text, message, setText, CHATMESSAGE, chatMember, show }) => {
 
     const { userId } = useSelector((state) => state.userGetStore);
 
     const senderId = userId?.id;
 
     const view = useRef(null)
+
+    const [status, setStatus] = useState("offline");
+
+    useEffect(() => {
+
+        const statusRef = ref(db, `/userStatus/${senderId}`);
+
+        onValue(statusRef, (snapshot) => {
+            const data = snapshot.val();
+            if(data) setStatus(data.status)
+        });
+
+    }, [senderId]);
 
 
     useEffect(() => {
@@ -31,7 +46,7 @@ export const Sentmessage = ({ text, message, setText, CHATMESSAGE, chatMember })
                     <p className="text-gray-500 text-lg flex items-center gap-2">
                         {chatMember ? "online" : "offline"}
                         <span
-                            className={`w-3 h-3 rounded-full ${chatMember ? "bg-green-500" : "bg-red-500"
+                            className={`w-3 h-3 rounded-full ${status === "online" ? "bg-green-500" : "bg-red-500"
                                 }`}
                         ></span>
                     </p>
@@ -83,8 +98,8 @@ export const Sentmessage = ({ text, message, setText, CHATMESSAGE, chatMember })
                         )
                 }
 
-                     <div ref={view} />
-               
+                <div ref={view} />
+
             </div>
 
             <div className=" flex items-center justify-between py-4 px-4 gap-3 rounded-2xl bg-[#eeeffa] 
@@ -98,11 +113,11 @@ export const Sentmessage = ({ text, message, setText, CHATMESSAGE, chatMember })
                 </div>
 
                 <div className="flex gap-4 items-center">
-                     <MdOutlineKeyboardVoice className="text-2xl cursor-pointer text-[#75757a]" />
-                <LiaTelegramPlane className="text-2xl cursor-pointer text-[#75757a]" onClick={CHATMESSAGE} />
+                    <MdOutlineKeyboardVoice className="text-2xl cursor-pointer text-[#75757a]" />
+                    <LiaTelegramPlane className="text-2xl cursor-pointer text-[#75757a]" onClick={CHATMESSAGE} />
 
                 </div>
-               
+
             </div>
         </div >
 

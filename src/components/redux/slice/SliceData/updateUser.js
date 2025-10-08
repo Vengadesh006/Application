@@ -8,7 +8,7 @@ export const updateUserId = createAsyncThunk("/user/token", async ({id , formDat
                 Authorization: `Bearer ${token}`
             }
         })
-        console.log(res?.data)
+     
         return await res?.data?.message
 
     } catch (err) {

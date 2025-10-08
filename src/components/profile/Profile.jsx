@@ -5,6 +5,8 @@ import { userGetId } from '../redux/slice/SliceData/userGetId';
 import { UpdateProfile } from './UpdateProfile';
 import { updateUserId } from '../redux/slice/SliceData/updateUser';
 import { getMemberFetch } from '../redux/slice/SliceData/GetMember';
+import { IMAGE_URL } from '../../Image';
+
 
 export const Profile = () => {
 
@@ -26,9 +28,9 @@ export const Profile = () => {
 
         formData.append("avatar", file);
 
-        const id = userId?.id 
+        const id = userId?.id
 
-        const res = await dispatch(updateUserId({id , formData , token })).unwrap();
+        const res = await dispatch(updateUserId({ id, formData, token })).unwrap();
 
         dispatch(userGetId(token))
 
@@ -41,10 +43,7 @@ export const Profile = () => {
       }
     }
 
-
-  }
-
-
+  } 
 
   return (
     <div className="h-[760px] w-full min-h-screen flex items-center justify-center rounded-4xl relative overflow-hidden border bg-white">
@@ -53,11 +52,9 @@ export const Profile = () => {
         <div className="relative w-38 h-38 rounded-full overflow-hidden group cursor-pointer">
           {/* Image Preview */}
           <img
-            src={
-              userId?.avatar.startsWith("https") ? 
-              userId?.avatar :
-              `http://localhost:3000/upload/${userId.avatar}`
-            }
+            src={userId?.avatar?.startsWith("https")
+              ? userId.avatar
+              : `${IMAGE_URL}/${userId.avatar}`}
             className="w-full h-full object-cover"
             alt="profile"
           />

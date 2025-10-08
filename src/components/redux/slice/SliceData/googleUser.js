@@ -4,11 +4,10 @@ import API from "../../../Api"
 export const GoogleAuth = createAsyncThunk(
     '/user/google', 
   async (googleInfo, {rejectWithValue }) => {
-        console.log(googleInfo);
         
         try{
             const res = await API.post(`/auth/google`, googleInfo )
-            console.log(res?.data)
+          
             return res?.data
 
         }catch(err) {

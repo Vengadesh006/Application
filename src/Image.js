@@ -1,0 +1,1 @@
+export const IMAGE_URL = "https://4v500nz7-3000.inc1.devtunnels.ms/upload"
